@@ -10,3 +10,4 @@ A demo project to highlight my JS skills. It is a front end developer job board.
 - bookmark jobs
 - bookmarks section that displays bookmarked jobs
 - select job and open the details page
+- pagination feature
