@@ -6,6 +6,7 @@ import {
 
 import renderSpinner from './Spinner.js';
 import renderJobDetails from './JobDetails.js';
+import renderError from './Error.js';
 
 const renderJobList = jobItems => {
     jobItems.slice(0,7).forEach(element => {
@@ -57,14 +58,14 @@ const clickHandler = event => {
     //fetch job item data
     fetch(`${BASE_API_URL}/jobs/${id}`)
     .then(res => {
-        if(!res.ok) {
-            console.log('There has been an error');
-            return;
+        if(!response.ok) {
+            throw new Error('Resource issue (e.g. resource doesn\'t exist) or server issue');
         }
         return res.json();
     })
     .then(data => {
         console.log(data);
+
         //extract job item
         const { jobItem } = data;
 
@@ -74,7 +75,10 @@ const clickHandler = event => {
         //render the job details
         renderJobDetails(jobItem);
     })
-    .catch(exception => console.log(exception));
+    .catch(error => {
+        renderSpinner('job-details');
+        renderError(error.message);
+    });
 };
 
 jobListSearchEl.addEventListener('click', clickHandler);
