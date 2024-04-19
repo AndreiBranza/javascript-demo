@@ -2,11 +2,13 @@ import {
     searchInputEl,
     searchFormEl,
     jobListSearchEl,
-    numberEl
+    numberEl,
+    BASE_API_URL
 } from '../common.js'
 
 import renderSpinner from './Spinner.js';
 import renderError from './Error.js';
+import renderJobList from './JobList.js';
 
 const submitHandler = event => {
     // prevent default behavior
@@ -34,7 +36,7 @@ const submitHandler = event => {
     renderSpinner('search');
 
     //fetch search results
-    fetch(`https://bytegrad.com/course-assets/js/2/api/jobs?search=${searchText}`)
+    fetch(`${BASE_API_URL}/jobs?search=${searchText}`)
         .then(response => {
             if(!response.ok) {
                 console.log('Something went wrong.');
@@ -55,28 +57,7 @@ const submitHandler = event => {
             numberEl.textContent = jobItems.length;
 
             //render job items in search job list
-            jobItems.slice(0,7).forEach(element => {
-                jobListSearchEl.insertAdjacentHTML('beforeend',
-                `<li class="job-item">
-                    <a class="job-item__link" href="${element.id}">
-                        <div class="job-item__badge">${element.badgeLetters}</div>
-                        <div class="job-item__middle">
-                            <h3 class="third-heading">${element.title}</h3>
-                            <p class="job-item__company">${element.company}</p>
-                            <div class="job-item__extras">
-                                <p class="job-item__extra"><i class="fa-solid fa-clock job-item__extra-icon"></i>${element.duration}</p>
-                                <p class="job-item__extra"><i class="fa-solid fa-money-bill job-item__extra-icon"></i>${element.salary}</p>
-                                <p class="job-item__extra"><i class="fa-solid fa-location-dot job-item__extra-icon"></i> ${element.location}</p>
-                            </div>
-                        </div>
-                        <div class="job-item__right">
-                            <i class="fa-solid fa-bookmark job-item__bookmark-icon"></i>
-                            <time class="job-item__time">${element.daysAgo}d</time>
-                        </div>
-                    </a>
-                </li>`
-            )
-            });
+            renderJobList(jobItems);
         })
         .catch(error => {
             console.log(error);
