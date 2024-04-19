@@ -3,10 +3,10 @@ import {
     searchFormEl,
     spinnerSearchEl,
     jobListSearchEl,
-    numberEl,
-    errorTextEl,
-    errorEl
+    numberEl
 } from '../common.js'
+
+import renderError from './Error.js';
 
 const submitHandler = event => {
     // prevent default behavior
@@ -20,9 +20,7 @@ const submitHandler = event => {
     const patternMatch = forbiddenPattern.test(searchText);
 
     if(patternMatch) {
-        errorTextEl.textContent = 'Your search may not contain Python';
-        errorEl.classList.add('error--visible');
-        setTimeout(() => errorEl.classList.remove('error--visible'), 3501);
+        renderError('Your search may not contain numbers');
         return;  
     }
 
