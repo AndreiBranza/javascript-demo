@@ -4,7 +4,8 @@ import {
     jobListSearchEl,
     numberEl,
     BASE_API_URL,
-    getData
+    getData,
+    state
 } from '../common.js'
 
 import renderSpinner from './Spinner.js';
@@ -42,6 +43,9 @@ const submitHandler = async event => {
         const data = await getData(`${BASE_API_URL}/jobs?search=${searchText}`);
     
         const { jobItems } = data;
+
+        //update state
+        state.searchJobItems = jobItems;
         
         //remove spinner
         renderSpinner('search');
@@ -50,7 +54,7 @@ const submitHandler = async event => {
         numberEl.textContent = jobItems.length;
     
         //render job items in search job list
-        renderJobList(jobItems);
+        renderJobList();
 
     } catch(error) {
             renderSpinner('search');
