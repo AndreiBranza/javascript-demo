@@ -3,7 +3,8 @@ import {
     jobDetailsContentEl,
     BASE_API_URL,
     getData,
-    state
+    state,
+    RESULTS_PER_PAGE
 } from '../common.js'
 
 import renderSpinner from './Spinner.js';
@@ -14,7 +15,7 @@ const renderJobList = () => {
     //remove previous job items
     jobListSearchEl.innerHTML = '';
     
-    state.searchJobItems.slice(0,7).forEach(element => {
+    state.searchJobItems.slice(state.currentPage * RESULTS_PER_PAGE - RESULTS_PER_PAGE, state.currentPage * RESULTS_PER_PAGE).forEach(element => {
         jobListSearchEl.insertAdjacentHTML('beforeend',
         `<li class="job-item">
             <a class="job-item__link" href="${element.id}">
