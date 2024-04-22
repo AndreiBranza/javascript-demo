@@ -33,7 +33,7 @@ const renderJobList = jobItems => {
     });
 }
 
-const clickHandler = event => {
+const clickHandler = async event => {
     // prevent default behavior
     event.preventDefault();
 
@@ -55,15 +55,15 @@ const clickHandler = event => {
     //get the id from the href element
     const id = jobItemEl.children[0].getAttribute('href');
 
-    //fetch job item data
-    fetch(`${BASE_API_URL}/jobs/${id}`)
-    .then(res => {
-        if(!response.ok) {
-            throw new Error('Resource issue (e.g. resource doesn\'t exist) or server issue');
+    try {
+
+        const response = await fetch(`${BASE_API_URL}/jobs/${id}`);
+        const data = await response.json();
+
+        if(!response.ok){
+            throw new Error(data.description);
         }
-        return res.json();
-    })
-    .then(data => {
+
         console.log(data);
 
         //extract job item
@@ -74,11 +74,11 @@ const clickHandler = event => {
 
         //render the job details
         renderJobDetails(jobItem);
-    })
-    .catch(error => {
+
+    } catch(error) {
         renderSpinner('job-details');
         renderError(error.message);
-    });
+    }
 };
 
 jobListSearchEl.addEventListener('click', clickHandler);
