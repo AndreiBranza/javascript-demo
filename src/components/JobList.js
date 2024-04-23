@@ -15,27 +15,27 @@ const renderJobList = () => {
     //remove previous job items
     jobListSearchEl.innerHTML = '';
     
-    state.searchJobItems.slice(state.currentPage * RESULTS_PER_PAGE - RESULTS_PER_PAGE, state.currentPage * RESULTS_PER_PAGE).forEach(element => {
+    state.searchJobItems.slice(state.currentPage * RESULTS_PER_PAGE - RESULTS_PER_PAGE, state.currentPage * RESULTS_PER_PAGE).forEach(jobItem => {
         jobListSearchEl.insertAdjacentHTML('beforeend',
-        `<li class="job-item">
-            <a class="job-item__link" href="${element.id}">
-                <div class="job-item__badge">${element.badgeLetters}</div>
-                <div class="job-item__middle">
-                    <h3 class="third-heading">${element.title}</h3>
-                    <p class="job-item__company">${element.company}</p>
-                    <div class="job-item__extras">
-                        <p class="job-item__extra"><i class="fa-solid fa-clock job-item__extra-icon"></i>${element.duration}</p>
-                        <p class="job-item__extra"><i class="fa-solid fa-money-bill job-item__extra-icon"></i>${element.salary}</p>
-                        <p class="job-item__extra"><i class="fa-solid fa-location-dot job-item__extra-icon"></i> ${element.location}</p>
+            `<li class="job-item ${state.activeJobItem.id === jobItem.id ? 'job-item--active' : ''}">
+                <a class="job-item__link" href="${jobItem.id}">
+                    <div class="job-item__badge">${jobItem.badgeLetters}</div>
+                    <div class="job-item__middle">
+                        <h3 class="third-heading">${jobItem.title}</h3>
+                        <p class="job-item__company">${jobItem.company}</p>
+                        <div class="job-item__extras">
+                            <p class="job-item__extra"><i class="fa-solid fa-clock job-item__extra-icon"></i>${jobItem.duration}</p>
+                            <p class="job-item__extra"><i class="fa-solid fa-money-bill job-item__extra-icon"></i>${jobItem.salary}</p>
+                            <p class="job-item__extra"><i class="fa-solid fa-location-dot job-item__extra-icon"></i> ${jobItem.location}</p>
+                        </div>
                     </div>
-                </div>
-                <div class="job-item__right">
-                    <i class="fa-solid fa-bookmark job-item__bookmark-icon"></i>
-                    <time class="job-item__time">${element.daysAgo}d</time>
-                </div>
-            </a>
-        </li>`
-    )
+                    <div class="job-item__right">
+                        <i class="fa-solid fa-bookmark job-item__bookmark-icon"></i>
+                        <time class="job-item__time">${jobItem.daysAgo}d</time>
+                    </div>
+                </a>
+            </li>`
+        )
     });
 }
 
@@ -60,6 +60,9 @@ const clickHandler = async event => {
 
     //get the id from the href element
     const id = jobItemEl.children[0].getAttribute('href');
+
+    //update state
+    state.activeJobItem = state.searchJobItems.find(jobItem => jobItem.id === +id);
 
     //add id to url
     history.pushState(null, '', `/#${id}`);
