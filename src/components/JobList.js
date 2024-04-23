@@ -46,7 +46,7 @@ const clickHandler = async event => {
     //get clicked job item element
     const jobItemEl = event.target.closest('.job-item');
 
-    // remove the active class from previously active job item
+    //remove the active class from previously active job item
     document.querySelector('.job-item--active')?.classList.remove('job-item--active');
     
     //add active class
@@ -60,6 +60,9 @@ const clickHandler = async event => {
 
     //get the id from the href element
     const id = jobItemEl.children[0].getAttribute('href');
+
+    //add id to url
+    history.pushState(null, '', `/#${id}`);
 
     try {
 
