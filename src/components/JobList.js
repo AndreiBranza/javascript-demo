@@ -4,19 +4,31 @@ import {
     BASE_API_URL,
     getData,
     state,
-    RESULTS_PER_PAGE
+    RESULTS_PER_PAGE,
+    jobListBookmarksEl
 } from '../common.js'
 
 import renderSpinner from './Spinner.js';
 import renderJobDetails from './JobDetails.js';
 import renderError from './Error.js';
 
-const renderJobList = () => {
+const renderJobList = (whichJobList = 'search') => {
+    //determine correct selector for job list (search result list or bookmarks list)
+    const jobListEL = whichJobList === 'search' ? jobListSearchEl : jobListBookmarksEl;
+
     //remove previous job items
-    jobListSearchEl.innerHTML = '';
+    jobListEL.innerHTML = '';
+
+    //determine the job items that should be rendered
+    let jobItems;
+    if(whichJobList === 'search'){
+        jobItems = state.searchJobItems.slice(state.currentPage * RESULTS_PER_PAGE - RESULTS_PER_PAGE, state.currentPage * RESULTS_PER_PAGE);
+    } else if (whichJobList === 'bookmarks'){
+        jobItems = state.bookmarkJobItems;
+    }
     
-    state.searchJobItems.slice(state.currentPage * RESULTS_PER_PAGE - RESULTS_PER_PAGE, state.currentPage * RESULTS_PER_PAGE).forEach(jobItem => {
-        jobListSearchEl.insertAdjacentHTML('beforeend',
+    jobItems.forEach(jobItem => {
+        jobListEL.insertAdjacentHTML('beforeend',
             `<li class="job-item ${state.activeJobItem.id === jobItem.id ? 'job-item--active' : ''}">
                 <a class="job-item__link" href="${jobItem.id}">
                     <div class="job-item__badge">${jobItem.badgeLetters}</div>
@@ -47,7 +59,7 @@ const clickHandler = async event => {
     const jobItemEl = event.target.closest('.job-item');
 
     //remove the active class from previously active job item
-    document.querySelector('.job-item--active')?.classList.remove('job-item--active');
+    document.querySelectorAll('.job-item--active').forEach(jobItemWithActiveClass => jobItemWithActiveClass.classList.remove('job-item--active'));
     
     //add active class
     jobItemEl.classList.add('job-item--active');
@@ -68,7 +80,6 @@ const clickHandler = async event => {
     history.pushState(null, '', `/#${id}`);
 
     try {
-
         // fetch job item data
         const data = await getData(`${BASE_API_URL}/jobs/${id}`);
 
@@ -90,5 +101,6 @@ const clickHandler = async event => {
 };
 
 jobListSearchEl.addEventListener('click', clickHandler);
+jobListBookmarksEl.addEventListener('click', clickHandler);
 
 export default renderJobList;
